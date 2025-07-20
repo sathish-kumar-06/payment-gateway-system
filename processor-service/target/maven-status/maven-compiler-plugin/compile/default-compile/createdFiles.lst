@@ -1,0 +1,5 @@
+com\sathish\processorservice\config\AppConfig.class
+com\sathish\processorserviceservice\PaymentProcessor.class
+com\sathish\processorservice\ProcessorServiceApplication.class
+com\sathish\processorservice\config\RabbitMQConfig.class
+com\sathish\processorservice\listener\PaymentListener.class

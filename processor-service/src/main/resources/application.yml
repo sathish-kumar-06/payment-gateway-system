@@ -1,0 +1,20 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: processor-service
+  rabbitmq:
+    host: localhost
+
+# Resilience4j Configuration
+resilience4j.circuitbreaker:
+  instances:
+    mockBankService:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 5
+      permittedNumberOfCallsInHalfOpenState: 3
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      waitDurationInOpenState: 5s
+      failureRateThreshold: 50
+      eventConsumerBufferSize: 10

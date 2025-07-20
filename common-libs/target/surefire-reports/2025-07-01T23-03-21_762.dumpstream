@@ -1,0 +1,5 @@
+# Created at 2025-07-01T23:03:21.977
+Boot Manifest-JAR contains absolute paths in classpath 'D:\sathish private v1\payment-gateway-system\common-libs\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+

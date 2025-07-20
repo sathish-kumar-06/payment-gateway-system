@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.9-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - "5672:5672" # AMQP port
+      - "15672:15672" # Management UI
+
+  # This is the new database service
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: payment
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d payment"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "8081:8081"
+    # This section is updated to wait for both rabbitmq and postgres
+    depends_on:
+      rabbitmq:
+        condition: service_started
+      postgres:
+        condition: service_healthy # Waits for the healthcheck to pass
+    # These environment variables configure the database connection
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/payment
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+
+  processor-service:
+    build: ./processor-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - rabbitmq
+      - mock-bank-service
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - MOCK_BANK_URL=http://mock-bank-service:9090/bank/process
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - rabbitmq
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+
+  mock-bank-service:
+    build: ./mock-bank-service
+    ports:
+      - "9090:9090"
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - payment-service

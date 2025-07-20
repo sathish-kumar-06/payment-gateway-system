@@ -1,0 +1,6 @@
+com\sathish\paymentservice\config\RabbitMQConfig.class
+com\sathish\paymentservice\repository\PaymentRepository.class
+com\sathish\paymentservice\controller\PaymentController.class
+com\sathish\paymentservice\model\Payment.class
+com\sathish\paymentservice\service\PaymentService.class
+com\sathish\paymentservice\PaymentServiceApplication.class
