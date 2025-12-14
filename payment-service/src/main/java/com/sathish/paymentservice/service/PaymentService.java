@@ -24,7 +24,7 @@ public class PaymentService {
     public Payment processPayment(PaymentRequest request, String idempotencyKey) {
         Optional<Payment> existingPayment = paymentRepository.findByIdempotencyKey(idempotencyKey);
         if (existingPayment.isPresent()) {
-            return existingPayment.get(); // Return existing payment for idempotent request
+            return existingPayment.get();
         }
 
         Payment payment = new Payment();
